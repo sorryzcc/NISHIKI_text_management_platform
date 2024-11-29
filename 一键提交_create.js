@@ -8,7 +8,8 @@ async () => {
     createData.InGameKey = state.key1 + '_' + state.key2 + '_' + state.key3
   }
 
-  createData.Context = `${state.textSceneInformation1}${state.textSceneInformation2}\nHow: ${state.how}\nWhere: ${state.where1}\nWhat: ${state.what}`;
+  const Where = `${[state.where1, state.where2, state.where3, state.where4, state.where5].filter(Boolean).join('_')}`;
+  createData.Context = `\n${state.textSceneInformation1}${state.textSceneInformation2}\nHow: ${state.how}\nWhere: ${Where}\nWhat: ${state.what}\n`;
 
   // 调用create接口
   const { body } = await source.$requests.create({
