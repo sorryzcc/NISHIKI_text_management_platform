@@ -1,8 +1,11 @@
 state.key1 = data.ClientText.formData.InGameKey.split('_')[0];
 state.key2 = data.ClientText.formData.InGameKey.split('_')[1];
 state.key3 = data.ClientText.formData.InGameKey.split('_')[2];
-state.where1 = 'mainInterface'
-state.where2 = data.ClientText.formData.Context
+state.where1 = data.ClientText.formData.Context.match(/Where:\s*(.*?)_/)[1];
+state.where2 = data.ClientText.formData.Context.match(/Where:\s*([^_]+)_([^_]+)/)[2];
+state.where3 = data.ClientText.formData.Context.match(/Where:\s*([^_]+)_([^_]+)_([^_]+)/)[3];
+state.where4 = data.ClientText.formData.Context.match(/Where:\s*([^_]+)_([^_]+)_([^_]+)_([^_]+)/)[4];
+state.where5 = data.ClientText.formData.Context.match(/Where:.*?_.*?_.*?_.*?_(.*?)\s*What:/)[1];
 state.what = (data.ClientText.formData.Context.match(/What:\s*(.*)/) || [])[1] || "";
 state.how = (data.ClientText.formData.Context.match(/How:\s*(.*)/) || [])[1] || "";
 state.textSceneInformation1 = data.ClientText.formData.Context.match(/^\s*(Backlog|Mcat|JIRA)/)[1];
