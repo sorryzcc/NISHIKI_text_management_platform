@@ -6,3 +6,4 @@ state.where2 = data.ClientText.formData.Context
 state.what = (data.ClientText.formData.Context.match(/What:\s*(.*)/) || [])[1] || "";
 state.how = (data.ClientText.formData.Context.match(/How:\s*(.*)/) || [])[1] || "";
 state.textSceneInformation1 = data.ClientText.formData.Context.match(/^\s*(Backlog|Mcat|JIRA)/)[1];
+state.textSceneInformation2 = data.ClientText.formData.Context.match(/(Backlog|Mcat|JIRA)(\d+)(?=\s*How:)/)[2];
