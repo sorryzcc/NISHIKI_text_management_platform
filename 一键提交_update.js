@@ -3,6 +3,7 @@ async () => {
 
 
   inGameKeyStr = source.formData.InGameKey + '_' + source.formData.ID + '_001';
+  PO =  source.formData.creator
 
 
   const { body } = await source.$requests.update({
@@ -11,7 +12,8 @@ async () => {
     },
     body: {
       ...source.formData, // 假设你需要提交整个formData，但修改InGameKey  
-      InGameKey: inGameKeyStr // 使用新的InGameKey字符串  
+      InGameKey: inGameKeyStr, // 使用新的InGameKey字符串  
+      PO:PO
     }
   });
 
