@@ -5,6 +5,8 @@ const context = data.ClientText.formData.Context;
 state.key1 = InGameKey.split('_')[0] || '';
 state.key2 = InGameKey.split('_')[1] || '';
 state.key3 = InGameKey.split('_')[2] || '';
+state.key4 = InGameKey.split('_')[3] || '';
+state.key5 = InGameKey.split('_')[4] || '';
 
 // 提取 Where: 之后，What: 之前的文本
 const whereMatch = context.match(/Where:\s*(.*?)\s*What:/);
