@@ -13,47 +13,61 @@ const worksheetData = [['Key', 'Value']]; // 表头
 // 用于存储所有键值对的数组
 let keyValuePairs = [];
 
-// 使用可读流读取文件
-const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+// 最大允许的字符数
+const MAX_CHARACTERS = 32767;
 
-// 临时变量，用于处理跨块的行分割问题
-let remaining = '';
+// 正则表达式用于匹配键值对，确保键以字母或下划线开头，并且只包含字母、数字和下划线
+const keyValuePairRegex = /^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)/m;
 
-readStream.on('data', chunk => {
-    // 将剩余部分与当前块合并，并按行分割
-    let lines = (remaining + chunk).split('\n');
-    remaining = lines.pop(); // 最后一行可能是不完整的，保存下来用于下一次处理
+function parseKeyValuePairs(content) {
+    let lines = content.split('\n');
+    let currentKey = null;
+    let currentValue = '';
 
     for (let line of lines) {
         line = line.trim();
-        if (!line || line.startsWith('#')) continue; // 忽略空行和注释行
-        
-        const parts = line.split('=', 2); // 只分割第一次出现的等号
-        if (parts.length === 2) {
-            const [key, value] = parts.map(part => part.trim());
-            keyValuePairs.push([key, value]);
-            console.log(`Added key-value pair: ${key} -> ${value}`); // 调试信息
-        } else {
-            console.warn(`Line does not contain '=' or has more than one '=': ${line}`);
-        }
-    }
-});
 
-readStream.on('end', () => {
-    // 处理最后剩余的部分
-    if (remaining) {
-        remaining = remaining.trim();
-        if (remaining && !remaining.startsWith('#')) {
-            const parts = remaining.split('=', 2);
-            if (parts.length === 2) {
-                const [key, value] = parts.map(part => part.trim());
-                keyValuePairs.push([key, value]);
-                console.log(`Added final key-value pair: ${key} -> ${value}`); // 调试信息
+        if (!line || line.startsWith('#')) continue; // 忽略空行和注释行
+
+        // 检查是否为新键值对的开始
+        const match = keyValuePairRegex.exec(line);
+        if (match) {
+            if (currentKey !== null) {
+                // 处理并保存当前键值对
+                finalizeKeyValuePair(currentKey, currentValue);
+            }
+            [_, currentKey, currentValue] = match;
+        } else {
+            // 如果当前行不是以等号开头，则认为是上一行值的延续
+            if (currentKey !== null) {
+                currentValue += '\n' + line;
             } else {
-                console.warn(`Remaining line does not contain '=' or has more than one '=': ${remaining}`);
+                console.warn(`Unexpected line format: ${line}`);
             }
         }
     }
+
+    // 处理最后一个键值对
+    if (currentKey !== null) {
+        finalizeKeyValuePair(currentKey, currentValue);
+    }
+}
+
+function finalizeKeyValuePair(key, value) {
+    // 检查并截断过长的值
+    if (value.length > MAX_CHARACTERS) {
+        console.warn(`Value for key ${key} is too long and will be truncated.`);
+        value = value.slice(0, MAX_CHARACTERS);
+    }
+
+    keyValuePairs.push([key.trim(), value.trim()]);
+    console.log(`Added key-value pair: ${key} -> ${value}`); // 调试信息
+}
+
+// 一次性读取整个文件内容
+try {
+    const content = fs.readFileSync(filePath, { encoding: 'utf8' });
+    parseKeyValuePairs(content);
 
     // 将所有键值对添加到工作表数据中
     worksheetData.push(...keyValuePairs);
@@ -65,11 +79,12 @@ readStream.on('end', () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
     
     // 写入文件
-    XLSX.writeFile(workbook, outputFilePath);
-    
-    console.log(`Finished reading the file and saved to ${outputFilePath}. Total rows: ${keyValuePairs.length + 1}`); // 加1是因为表头
-});
-
-readStream.on('error', err => {
+    try {
+        XLSX.writeFile(workbook, outputFilePath);
+        console.log(`Finished reading the file and saved to ${outputFilePath}. Total rows: ${keyValuePairs.length + 1}`); // 加1是因为表头
+    } catch (err) {
+        console.error('Error writing Excel file:', err);
+    }
+} catch (err) {
     console.error('Error reading file:', err);
-});
+}
