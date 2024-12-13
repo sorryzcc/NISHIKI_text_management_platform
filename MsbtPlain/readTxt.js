@@ -3,8 +3,8 @@ const path = require('path');
 const XLSX = require('xlsx');
 
 // 文件路径
-const filePath = path.join(__dirname, 'MsbtPlain_chs.txt');
-const outputFilePath = path.join(__dirname, 'output.xlsx');
+const filePath = path.join(__dirname, 'MsbtPlain_cht.txt');
+const outputFilePath = path.join(__dirname, 'MsbtPlain_cht.xlsx');
 
 // 创建一个空的工作簿和工作表
 const workbook = XLSX.utils.book_new();
