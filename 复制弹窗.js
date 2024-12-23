@@ -26,7 +26,7 @@ const howMatch = context.match(/How:\s*(.*?)\s*Where:/);
 state.how = howMatch ? howMatch[1] : '';
 
 // 提取场景信息
-const textSceneInformation1Match = context.match(/^\s*(Backlog|Mcat|JIRA)/);
+const textSceneInformation1Match = context.match(/^\s*(Backlog|B|Mcat|JIRA)/);
 state.textSceneInformation1 = textSceneInformation1Match ? textSceneInformation1Match[1] : '';
 
 // 提取场景信息中的数字部分
