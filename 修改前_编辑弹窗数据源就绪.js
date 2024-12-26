@@ -1,9 +1,3 @@
-// 使用正则表达式匹配并提取结尾为 _001 或 _002 的部分
-const matchResult = data.ClientText.formData.InGameKey.match(/_(00[12])$/);
-
-// 检查是否有匹配结果，并安全地设置 lastNumber
-state.lastNumber = matchResult ? matchResult[1] : null;
-
 const InGameKey = data.ClientText.formData.InGameKey;
 const context = data.ClientText.formData.Context;
 
