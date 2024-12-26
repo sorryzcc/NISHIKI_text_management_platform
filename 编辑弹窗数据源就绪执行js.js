@@ -28,11 +28,10 @@ const howMatch = context.match(/How:\s*(.*?)\s*Where:/);
 state.how = howMatch ? howMatch[1] : '';
 
 // 提取场景信息
-const textSceneInformation1Match = context.match(/^\s*(Backlog|B|Mcat|JIRA)/);
+const textSceneInformation1Match = context.match(/^\s*(Backlog|Mcat|JIRA)/);
 state.textSceneInformation1 = textSceneInformation1Match ? textSceneInformation1Match[1] : '';
 
-// 提取场景信息中的数字部分
-const textSceneInformation2Match = context.match(/^(Backlog|B|Mcat|JIRA)(\d+)/);
+const textSceneInformation2Match = context.match(/(Backlog|Mcat|JIRA)(\d+)(?=\s*How:)/);
 state.textSceneInformation2 = textSceneInformation2Match ? textSceneInformation2Match[2] : '';
 
 console.log(state);
