@@ -1,6 +1,0 @@
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 9.0/Uploads/users.csv'
-INTO TABLE runoob.users
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS;
